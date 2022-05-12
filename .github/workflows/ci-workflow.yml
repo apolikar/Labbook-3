@@ -90,8 +90,8 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK }}
       with:
         command: monitor
-        image: "ghcr.io/gbaeke/rgapi:main"
-        args: --file=Dockerfile --project-name=rgapi 
+        image: "ghcr.io/apolikar/tic-tac-toe2:main"
+        args: --file=Dockerfile --project-name=tic-tac-toe2
         
     - name: Push image
       uses: docker/build-push-action@v2
