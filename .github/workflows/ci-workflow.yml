@@ -45,9 +45,9 @@ jobs:
   Build-and-Push-Docker-Image:
     runs-on: ubuntu-latest
     needs: test
-    permissions:
-      contents: read
-      packages: write
+#     permissions:
+#       contents: read
+#       packages: write
     name: Docker Build, Tag, Push
     
     steps:
