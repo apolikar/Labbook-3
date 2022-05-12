@@ -41,48 +41,81 @@ jobs:
         env:
           CI: true
           
-  
-  Build-and-Push-Docker-Image:
+          
+  build-and-push-image:
     runs-on: ubuntu-latest
     needs: test
-#     permissions:
-#       contents: read
-#       packages: write
-    name: Docker Build, Tag, Push
-    
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }
+          
+  
+#   Build-and-Push-Docker-Image:
+#     runs-on: ubuntu-latest
+#     needs: test
+# #     permissions:
+# #       contents: read
+# #       packages: write
+#     name: Docker Build, Tag, Push
+    
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v2
     
     
       
-    - name: Docker meta
-      id: docker_meta
-      uses: crazy-max/ghaction-docker-meta@v1
-      with:
-        images: ghcr.io/apolikar/labbook-3
-        tag-sha: true
-        tag-edge: false
-        tag-latest: true
+#     - name: Docker meta
+#       id: docker_meta
+#       uses: crazy-max/ghaction-docker-meta@v1
+#       with:
+#         images: ghcr.io/apolikar/labbook-3
+#         tag-sha: true
+#         tag-edge: false
+#         tag-latest: true
         
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+#     - name: Set up QEMU
+#       uses: docker/setup-qemu-action@v2
       
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+#     - name: Set up Docker Buildx
+#       uses: docker/setup-buildx-action@v2
         
-    - name: login to GHCR
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.PAT_TOKEN }}
+#     - name: login to GHCR
+#       uses: docker/login-action@v1
+#       with:
+#         registry: ghcr.io
+#         username: ${{ github.repository_owner }}
+#         password: ${{ secrets.PAT_TOKEN }}
         
-    - name: Build image
-      uses: docker/build-push-action@v2 
-      with:
-        tags: ${{ steps.docker_meta.outputs.tags }}
-        file: ./Dockerfile
+#     - name: Build image
+#       uses: docker/build-push-action@v2 
+#       with:
+#         tags: ${{ steps.docker_meta.outputs.tags }}
+#         file: ./Dockerfile
         
         
 #     - name: Monitor image for vulnerabilities with Snyk
@@ -94,12 +127,12 @@ jobs:
 #         image: "ghcr.io/apolikar/tic-tac-toe2:main"
 #         args: --file=Dockerfile --project-name=tic-tac-toe2
         
-    - name: Push image
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: ${{ steps.docker_meta.outputs.tags }}
-        file: ./Dockerfile
+#     - name: Push image
+#       uses: docker/build-push-action@v2
+#       with:
+#         push: true
+#         tags: ${{ steps.docker_meta.outputs.tags }}
+#         file: ./Dockerfile
       
       
       
