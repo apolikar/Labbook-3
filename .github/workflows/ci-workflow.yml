@@ -83,7 +83,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK }}
         with:
-          command: test
+          command: monitor
           image: "ghcr.io/apolikar/labbook-3:main"
           args: --file=Dockerfile --project-name=labbook-3
           
