@@ -77,6 +77,15 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Monitor image for vulnerabilities with Snyk
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK }}
+        with:
+          command: monitor
+          image: "ghcr.io/apolikar/labbook-3:main"
+          args: --file=Dockerfile --project-name=labbook-3
           
   
 #   Build-and-Push-Docker-Image:
