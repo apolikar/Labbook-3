@@ -1,4 +1,4 @@
 
 # Our Dockerfile
-FROM nginx:1.19
+FROM nginx:1.28.0
 COPY . /usr/share/nginx/html
